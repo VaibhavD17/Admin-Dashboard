@@ -1,0 +1,177 @@
+@media screen and (max-width:575px) {
+  header .logo span {
+    display: none !important;
+  }
+
+  header .logo {
+    margin-right: 0px;
+  }
+
+  header .searchBox {
+    display: none !important;
+  }
+
+  .header-group {
+    justify-content: end;
+  }
+
+  .dropDownWrapper {
+    display: none;
+  }
+
+  .myAccWrapper .userInfo {
+    display: none;
+  }
+
+  .sidebarWraper {
+    z-index: 5;
+  }
+  .register-form {
+    width: 100%;
+    padding: 30px;
+  }
+
+  .main .sidebarWraper {
+    width: 0;
+    flex: 0 0 0;
+    transition: all 0.4s;
+  }
+
+  .main .content {
+    width: 100%;
+    flex: 0 0 100%;
+    transition: all 0.4s;
+  }
+
+  .register-banner {display: none;}
+}
+
+@media screen and (min-width:576px) {
+  .dropDownWrapper {
+    display: none;
+  }
+
+  header .searchBox {
+    display: none !important;
+  }
+
+  .header-group {
+    justify-content: end;
+
+  }
+
+  .main .sidebarWraper {
+    width: 0;
+    flex: 0 0 0;
+    transition: all 0.4s;
+  }
+
+  .main .content {
+    width: 100%;
+    flex: 0 0 100%;
+    transition: all 0.4s;
+  }
+
+  .sidebarWraper {
+    z-index: 5;
+  }
+  .register-form {
+    width: 100%;
+    padding: 50px 80px;
+  }
+
+  .register-banner {display: none;}
+}
+
+@media screen and (min-width:768px) {
+  header .searchBox {
+    display: none !important;
+  }
+
+
+  .dropDownWrapper {
+    display: none;
+  }
+
+  .main .sidebarWraper {
+    width: 0;
+    flex: 0 0 0;
+    transition: all 0.4s;
+  }
+
+  .main .content {
+    width: 100%;
+    flex: 0 0 100%;
+    transition: all 0.4s;
+  }
+
+  
+  .register-form {
+    width: 45%;
+    padding: 30px 35px;
+  }
+  .register-banner {display: flex;}
+
+  .register-banner-content h2 {font-size: 35px !important;}
+}
+
+@media screen and (min-width:992px) {
+  header .searchBox {
+    display: flex !important;
+  }
+
+  .main .sidebarWraper {
+    width: 20%;
+    flex: 0 0 20%;
+    transition: all 0.4s;
+   
+  }
+
+
+  .main .content {
+    width: 80%;
+    flex: 0 0 80%;
+    transition: all 0.4s;
+  }
+  .register-form {
+    width: 45%;
+    padding: 40px 50px;
+  }
+  .register-banner {display: flex;}
+  .register-banner-content h2 {font-size: 45px !important;}
+}
+
+@media screen and (min-width:1200px) {
+
+  .header-group {
+    justify-content: space-between;
+  }
+
+  .dropDownWrapper {
+    display: block;
+  }
+
+  #notification .MuiPaper-elevation {
+    right: 15% !important;
+  }
+
+  #email .MuiPaper-elevation {
+    right: 20% !important;
+  }
+  .register-form {
+    width: 35%;
+    padding: 30px 60px 50px ;
+  }
+
+
+}
+
+@media screen and (min-width:1400px) {
+  #notification .MuiPaper-elevation {
+    right: 13% !important;
+  }
+
+  #email .MuiPaper-elevation {
+    right: 17% !important;
+  }
+}

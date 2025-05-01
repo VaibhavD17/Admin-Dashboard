@@ -24,6 +24,11 @@ import CasesRoundedIcon from '@mui/icons-material/CasesRounded';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import LayersIcon from '@mui/icons-material/Layers';
 import { MyContext } from '../../App';
+import PendingIcon from '@mui/icons-material/Pending';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import ErrorIcon from '@mui/icons-material/Error';
 
 import {
     AreaChart,
@@ -33,9 +38,28 @@ import {
     Tooltip,
     ResponsiveContainer,
     CartesianGrid,
-  } from 'recharts';
-  
-  const dataArea = [
+} from 'recharts';
+
+
+export const overviewdata = [
+    ["Status", "Count"],
+    ["Pending", 547],
+    ["Shipped", 398],
+    ["Received", 605],
+    ["Cancelled", 249],
+    ["Refunded", 176],
+];
+
+export const overviewoptions = {
+    pieHole: 0.5,
+    is3D: false,
+    chartArea: { width: "100%", height: "80%" },
+    colors: ["#a020f0", "#2196f3", "#4caf50", "#f44336", "#ffcc00"],
+    legend: "none",
+
+};
+
+const revenueData = [
     { month: 'JAN', invest: 4000, earning: 7400, expense: 5700 },
     { month: 'FEB', invest: 3500, earning: 6000, expense: 5000 },
     { month: 'MAR', invest: 4000, earning: 6200, expense: 5200 },
@@ -48,24 +72,24 @@ import {
     { month: 'OCT', invest: 8300, earning: 4800, expense: 5700 },
     { month: 'NOV', invest: 4400, earning: 7800, expense: 5800 },
     { month: 'DEC', invest: 5400, earning: 6800, expense: 5800 },
-  ];
+];
 
-  const CustomTooltip = ({ active, payload, label }) => {
+const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
-      return (
-        <div className="bg-white p-3 rounded shadow text-sm">
-          <p><strong>{label}</strong></p>
-          <p style={{ color: '#3498db' }}>Invest : {payload[0].value}</p>
-          <p style={{ color: '#2ecc71' }}>Earning : {payload[1].value}</p>
-          <p style={{ color: '#ED68FF' }}>Expense : {payload[2].value}</p>
-        </div>
-      );
+        return (
+            <div className="bg-white p-3 rounded shadow text-sm">
+                <p><strong>{label}</strong></p>
+                <p style={{ color: '#3498db' }}>Invest : {payload[0].value}</p>
+                <p style={{ color: '#2ecc71' }}>Earning : {payload[1].value}</p>
+                <p style={{ color: '#ED68FF' }}>Expense : {payload[2].value}</p>
+            </div>
+        );
     }
     return null;
-  };
+};
 
 
-export const data = [
+export const totalSalesData = [
     ["Day", "Sales"],
     ["MON", 1000],
     ["TUE", 1170],
@@ -76,7 +100,7 @@ export const data = [
     ["SUN", 762],
 ];
 
-export const options = {
+export const totalSalesoptions = {
     vAxis: { minValue: 0 },
     chartArea: { width: "90%", height: "90%" },
     backgroundColor: 'transparent', // Set background to transparent
@@ -99,7 +123,7 @@ const columns = [
     {
         field: 'product', headerName: 'product',
         flex: 1,
-        minWidth: 220,
+        minWidth: 200,
         renderCell: (params) => {
             return (
                 <div className='mc-table-product-data'>
@@ -115,17 +139,17 @@ const columns = [
     {
         field: 'category', headerName: 'category',
         flex: 1,
-        minWidth: 125
+        minWidth: 120
     },
     {
         field: 'brand', headerName: 'brand',
         flex: 1,
-        minWidth: 100
+        minWidth: 90
     },
     {
         field: 'price', headerName: 'price',
         flex: 1,
-        minWidth: 95,
+        minWidth: 80,
         renderCell: (params) => {
             return (
                 params.row.oldPrice ? <div className='old-price-data'>
@@ -139,12 +163,12 @@ const columns = [
     {
         field: 'stock', headerName: 'stock',
         flex: 1,
-        minWidth: 90
+        minWidth: 70
     },
     {
         field: 'rating', headerName: 'rating',
         flex: 1,
-        minWidth: 125,
+        minWidth: 100,
         renderCell: (params) => {
             return (
                 <div className='star-rating'>
@@ -158,7 +182,7 @@ const columns = [
     {
         field: 'order', headerName: 'order',
         flex: 1,
-        minWidth: 90
+        minWidth: 80
     },
     {
         field: 'sales', headerName: 'sales',
@@ -168,7 +192,7 @@ const columns = [
     {
         field: 'action', headerName: 'action',
         flex: 1,
-        minWidth: 140,
+        minWidth: 130,
         renderCell: (params) => {
             return (
                 <div className='table-action'>
@@ -336,6 +360,15 @@ const rows = [
 
 function Dashboard(props) {
 
+
+    const legend = [
+        { label: "Pending", color: "#a020f0", count: 547 },
+        { label: "Shipped", color: "#2196f3", count: 398 },
+        { label: "Received", color: "#4caf50", count: 605 },
+        { label: "Cancelled", color: "#f44336", count: 249 },
+        { label: "Refunded", color: "#ffcc00", count: 176 },
+      ];
+
     const [AnchorEl, setAnchorEl] = useState(null);
     const [showBy, setshowBy] = useState('');
     const [CRUD_Action, setCRUD_Action] = useState(null);
@@ -368,271 +401,279 @@ function Dashboard(props) {
 
     return (
         <div>
-            <div className='right-content w-100'>
+            <div className='right-content '>
                 <div className='row dashboardBoxWrapperRow'>
-                    <div className='col-xl-8'>
-                        <div className='dashboardBoxWrapper d-flex'>
-                            <div className='dashboardBox green'>
-                                <TrendingUpIcon className='growIcon' />
-                                <div className='dashboardBoxHead'>
-                                    <h4>
-                                        <span>total users</span>
-                                        277
-                                    </h4>
-                                    <div className='dashboardBoxicon'> <AccountCircleIcon /></div>
-                                </div>
-                                <div className='dashboardBoxFoot'>
-                                    <div className='boxFootDate'>
-                                        <h6>last month</h6>
+                    <div className='col-xl-8 col-12'>
+                        <div className='dashboardBoxWrapper  row row-cols-sm-2 row-cols-1'>
+                            <div className='col'>
+                                <div className='dashboardBox green'>
+                                    <TrendingUpIcon className='growIcon' />
+                                    <div className='dashboardBoxHead'>
+                                        <h4>
+                                            <span>total users</span>
+                                            277
+                                        </h4>
+                                        <div className='dashboardBoxicon'> <AccountCircleIcon /></div>
                                     </div>
-                                    <div className='boxFootIcon'>
-                                        <Button onClick={handleOpenAnchorEl}>
-                                            <MoreVertIcon />
-                                        </Button>
-                                        <Menu
-                                            anchorEl={AnchorEl}
-                                            id="last-time"
-                                            open={openAnchorEl}
-                                            onClose={handleCloseAnchorEl}
-                                            onClick={handleCloseAnchorEl}
-                                            slotProps={{
-                                                paper: {
-                                                    elevation: 0,
+                                    <div className='dashboardBoxFoot'>
+                                        <div className='boxFootDate'>
+                                            <h6>last month</h6>
+                                        </div>
+                                        <div className='boxFootIcon'>
+                                            <Button onClick={handleOpenAnchorEl}>
+                                                <MoreVertIcon />
+                                            </Button>
+                                            <Menu
+                                                anchorEl={AnchorEl}
+                                                id="last-time"
+                                                open={openAnchorEl}
+                                                onClose={handleCloseAnchorEl}
+                                                onClick={handleCloseAnchorEl}
+                                                slotProps={{
+                                                    paper: {
+                                                        elevation: 0,
 
-                                                },
-                                            }}
-                                            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                                            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                                        >
+                                                    },
+                                                }}
+                                                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                                                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                                            >
 
-                                            <MenuItem onClick={handleCloseAnchorEl}>
-                                                <ListItemIcon>
-                                                    <HistoryIcon fontSize="small" />
-                                                </ListItemIcon>
-                                                last day
-                                            </MenuItem>
-                                            <MenuItem onClick={handleCloseAnchorEl}>
-                                                <ListItemIcon>
-                                                    <HistoryIcon fontSize="small" />
-                                                </ListItemIcon>
-                                                last week
-                                            </MenuItem>
-                                            <MenuItem onClick={handleCloseAnchorEl}>
-                                                <ListItemIcon>
-                                                    <HistoryIcon fontSize="small" />
-                                                </ListItemIcon>
-                                                last month
-                                            </MenuItem>
-                                            <MenuItem onClick={handleCloseAnchorEl}>
-                                                <ListItemIcon>
-                                                    <HistoryIcon fontSize="small" />
-                                                </ListItemIcon>
-                                                last year
-                                            </MenuItem>
-                                        </Menu>
+                                                <MenuItem onClick={handleCloseAnchorEl}>
+                                                    <ListItemIcon>
+                                                        <HistoryIcon fontSize="small" />
+                                                    </ListItemIcon>
+                                                    last day
+                                                </MenuItem>
+                                                <MenuItem onClick={handleCloseAnchorEl}>
+                                                    <ListItemIcon>
+                                                        <HistoryIcon fontSize="small" />
+                                                    </ListItemIcon>
+                                                    last week
+                                                </MenuItem>
+                                                <MenuItem onClick={handleCloseAnchorEl}>
+                                                    <ListItemIcon>
+                                                        <HistoryIcon fontSize="small" />
+                                                    </ListItemIcon>
+                                                    last month
+                                                </MenuItem>
+                                                <MenuItem onClick={handleCloseAnchorEl}>
+                                                    <ListItemIcon>
+                                                        <HistoryIcon fontSize="small" />
+                                                    </ListItemIcon>
+                                                    last year
+                                                </MenuItem>
+                                            </Menu>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className='dashboardBox purple'>
-                                <TrendingDownIcon className='growIcon' />
-                                <div className='dashboardBoxHead'>
-                                    <h4>
-                                        <span>total orders
-                                        </span>
-                                        338
-                                    </h4>
-                                    <div className='dashboardBoxicon'> <ShoppingCartIcon /></div>
-                                </div>
-                                <div className='dashboardBoxFoot'>
-                                    <div className='boxFootDate'>
-                                        <h6>last month</h6>
+                            <div className='col'>
+                                <div className='dashboardBox purple'>
+                                    <TrendingDownIcon className='growIcon' />
+                                    <div className='dashboardBoxHead'>
+                                        <h4>
+                                            <span>total orders
+                                            </span>
+                                            338
+                                        </h4>
+                                        <div className='dashboardBoxicon'> <ShoppingCartIcon /></div>
                                     </div>
-                                    <div className='boxFootIcon'>
-                                        <Button className='toggleIcon' onClick={handleOpenAnchorEl}>
-                                            <MoreVertIcon />
-                                        </Button>
-                                        <Menu
-                                            anchorEl={AnchorEl}
-                                            id="last-time"
-                                            open={openAnchorEl}
-                                            onClose={handleCloseAnchorEl}
-                                            onClick={handleCloseAnchorEl}
-                                            slotProps={{
-                                                paper: {
-                                                    elevation: 0,
-                                                    sx: {
+                                    <div className='dashboardBoxFoot'>
+                                        <div className='boxFootDate'>
+                                            <h6>last month</h6>
+                                        </div>
+                                        <div className='boxFootIcon'>
+                                            <Button className='toggleIcon' onClick={handleOpenAnchorEl}>
+                                                <MoreVertIcon />
+                                            </Button>
+                                            <Menu
+                                                anchorEl={AnchorEl}
+                                                id="last-time"
+                                                open={openAnchorEl}
+                                                onClose={handleCloseAnchorEl}
+                                                onClick={handleCloseAnchorEl}
+                                                slotProps={{
+                                                    paper: {
+                                                        elevation: 0,
+                                                        sx: {
 
-                                                        mt: 1.5,
+                                                            mt: 1.5,
 
+                                                        },
                                                     },
-                                                },
-                                            }}
-                                            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                                            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                                        >
+                                                }}
+                                                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                                                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                                            >
 
-                                            <MenuItem onClick={handleCloseAnchorEl}>
-                                                <ListItemIcon>
-                                                    <HistoryIcon fontSize="small" />
-                                                </ListItemIcon>
-                                                last day
-                                            </MenuItem>
-                                            <MenuItem onClick={handleCloseAnchorEl}>
-                                                <ListItemIcon>
-                                                    <HistoryIcon fontSize="small" />
-                                                </ListItemIcon>
-                                                last week
-                                            </MenuItem>
-                                            <MenuItem onClick={handleCloseAnchorEl}>
-                                                <ListItemIcon>
-                                                    <HistoryIcon fontSize="small" />
-                                                </ListItemIcon>
-                                                last month
-                                            </MenuItem>
-                                            <MenuItem onClick={handleCloseAnchorEl}>
-                                                <ListItemIcon>
-                                                    <HistoryIcon fontSize="small" />
-                                                </ListItemIcon>
-                                                last year
-                                            </MenuItem>
-                                        </Menu>
+                                                <MenuItem onClick={handleCloseAnchorEl}>
+                                                    <ListItemIcon>
+                                                        <HistoryIcon fontSize="small" />
+                                                    </ListItemIcon>
+                                                    last day
+                                                </MenuItem>
+                                                <MenuItem onClick={handleCloseAnchorEl}>
+                                                    <ListItemIcon>
+                                                        <HistoryIcon fontSize="small" />
+                                                    </ListItemIcon>
+                                                    last week
+                                                </MenuItem>
+                                                <MenuItem onClick={handleCloseAnchorEl}>
+                                                    <ListItemIcon>
+                                                        <HistoryIcon fontSize="small" />
+                                                    </ListItemIcon>
+                                                    last month
+                                                </MenuItem>
+                                                <MenuItem onClick={handleCloseAnchorEl}>
+                                                    <ListItemIcon>
+                                                        <HistoryIcon fontSize="small" />
+                                                    </ListItemIcon>
+                                                    last year
+                                                </MenuItem>
+                                            </Menu>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className='dashboardBox blue'>
-                                <TrendingDownIcon className='growIcon' />
-                                <div className='dashboardBoxHead'>
-                                    <h4>
-                                        <span>total products</span>
-                                        557
-                                    </h4>
-                                    <div className='dashboardBoxicon'> <ShoppingBagIcon /></div>
-                                </div>
-                                <div className='dashboardBoxFoot'>
-                                    <div className='boxFootDate'>
-                                        <h6>last month</h6>
+                            <div className='col'>
+                                <div className='dashboardBox blue'>
+                                    <TrendingDownIcon className='growIcon' />
+                                    <div className='dashboardBoxHead'>
+                                        <h4>
+                                            <span>total products</span>
+                                            557
+                                        </h4>
+                                        <div className='dashboardBoxicon'> <ShoppingBagIcon /></div>
                                     </div>
-                                    <div className='boxFootIcon'>
-                                        <Button onClick={handleOpenAnchorEl}>
-                                            <MoreVertIcon />
-                                        </Button>
-                                        <Menu
-                                            anchorEl={AnchorEl}
-                                            id="last-time"
-                                            open={openAnchorEl}
-                                            onClose={handleCloseAnchorEl}
-                                            onClick={handleCloseAnchorEl}
-                                            slotProps={{
-                                                paper: {
-                                                    elevation: 0,
-                                                    sx: {
+                                    <div className='dashboardBoxFoot'>
+                                        <div className='boxFootDate'>
+                                            <h6>last month</h6>
+                                        </div>
+                                        <div className='boxFootIcon'>
+                                            <Button onClick={handleOpenAnchorEl}>
+                                                <MoreVertIcon />
+                                            </Button>
+                                            <Menu
+                                                anchorEl={AnchorEl}
+                                                id="last-time"
+                                                open={openAnchorEl}
+                                                onClose={handleCloseAnchorEl}
+                                                onClick={handleCloseAnchorEl}
+                                                slotProps={{
+                                                    paper: {
+                                                        elevation: 0,
+                                                        sx: {
 
-                                                        mt: 1.5,
+                                                            mt: 1.5,
 
+                                                        },
                                                     },
-                                                },
-                                            }}
-                                            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                                            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                                        >
+                                                }}
+                                                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                                                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                                            >
 
-                                            <MenuItem onClick={handleCloseAnchorEl}>
-                                                <ListItemIcon>
-                                                    <HistoryIcon fontSize="small" />
-                                                </ListItemIcon>
-                                                last day
-                                            </MenuItem>
-                                            <MenuItem onClick={handleCloseAnchorEl}>
-                                                <ListItemIcon>
-                                                    <HistoryIcon fontSize="small" />
-                                                </ListItemIcon>
-                                                last week
-                                            </MenuItem>
-                                            <MenuItem onClick={handleCloseAnchorEl}>
-                                                <ListItemIcon>
-                                                    <HistoryIcon fontSize="small" />
-                                                </ListItemIcon>
-                                                last month
-                                            </MenuItem>
-                                            <MenuItem onClick={handleCloseAnchorEl}>
-                                                <ListItemIcon>
-                                                    <HistoryIcon fontSize="small" />
-                                                </ListItemIcon>
-                                                last year
-                                            </MenuItem>
-                                        </Menu>
+                                                <MenuItem onClick={handleCloseAnchorEl}>
+                                                    <ListItemIcon>
+                                                        <HistoryIcon fontSize="small" />
+                                                    </ListItemIcon>
+                                                    last day
+                                                </MenuItem>
+                                                <MenuItem onClick={handleCloseAnchorEl}>
+                                                    <ListItemIcon>
+                                                        <HistoryIcon fontSize="small" />
+                                                    </ListItemIcon>
+                                                    last week
+                                                </MenuItem>
+                                                <MenuItem onClick={handleCloseAnchorEl}>
+                                                    <ListItemIcon>
+                                                        <HistoryIcon fontSize="small" />
+                                                    </ListItemIcon>
+                                                    last month
+                                                </MenuItem>
+                                                <MenuItem onClick={handleCloseAnchorEl}>
+                                                    <ListItemIcon>
+                                                        <HistoryIcon fontSize="small" />
+                                                    </ListItemIcon>
+                                                    last year
+                                                </MenuItem>
+                                            </Menu>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className='dashboardBox yellow'>
-                                <TrendingUpIcon className='growIcon' />
-                                <div className='dashboardBoxHead'>
-                                    <h4>
-                                        <span>total reviews</span>
-                                        166
-                                    </h4>
-                                    <div className='dashboardBoxicon'> <MdHotelClass /></div>
-                                </div>
-                                <div className='dashboardBoxFoot'>
-                                    <div className='boxFootDate'>
-                                        <h6>last month</h6>
+                            <div className='col'>
+                                <div className='dashboardBox yellow'>
+                                    <TrendingUpIcon className='growIcon' />
+                                    <div className='dashboardBoxHead'>
+                                        <h4>
+                                            <span>total reviews</span>
+                                            166
+                                        </h4>
+                                        <div className='dashboardBoxicon'> <MdHotelClass /></div>
                                     </div>
-                                    <div className='boxFootIcon'>
-                                        <Button onClick={handleOpenAnchorEl}>
-                                            <MoreVertIcon />
-                                        </Button>
-                                        <Menu
-                                            anchorEl={AnchorEl}
-                                            id="last-time"
-                                            open={openAnchorEl}
-                                            onClose={handleCloseAnchorEl}
-                                            onClick={handleCloseAnchorEl}
-                                            slotProps={{
-                                                paper: {
-                                                    elevation: 0,
-                                                    sx: {
+                                    <div className='dashboardBoxFoot'>
+                                        <div className='boxFootDate'>
+                                            <h6>last month</h6>
+                                        </div>
+                                        <div className='boxFootIcon'>
+                                            <Button onClick={handleOpenAnchorEl}>
+                                                <MoreVertIcon />
+                                            </Button>
+                                            <Menu
+                                                anchorEl={AnchorEl}
+                                                id="last-time"
+                                                open={openAnchorEl}
+                                                onClose={handleCloseAnchorEl}
+                                                onClick={handleCloseAnchorEl}
+                                                slotProps={{
+                                                    paper: {
+                                                        elevation: 0,
+                                                        sx: {
 
-                                                        mt: 1.5,
+                                                            mt: 1.5,
 
+                                                        },
                                                     },
-                                                },
-                                            }}
-                                            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                                            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                                        >
+                                                }}
+                                                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                                                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                                            >
 
-                                            <MenuItem onClick={handleCloseAnchorEl}>
-                                                <ListItemIcon>
-                                                    <HistoryIcon fontSize="small" />
-                                                </ListItemIcon>
-                                                last day
-                                            </MenuItem>
-                                            <MenuItem onClick={handleCloseAnchorEl}>
-                                                <ListItemIcon>
-                                                    <HistoryIcon fontSize="small" />
-                                                </ListItemIcon>
-                                                last week
-                                            </MenuItem>
-                                            <MenuItem onClick={handleCloseAnchorEl}>
-                                                <ListItemIcon>
-                                                    <HistoryIcon fontSize="small" />
-                                                </ListItemIcon>
-                                                last month
-                                            </MenuItem>
-                                            <MenuItem onClick={handleCloseAnchorEl}>
-                                                <ListItemIcon>
-                                                    <HistoryIcon fontSize="small" />
-                                                </ListItemIcon>
-                                                last year
-                                            </MenuItem>
-                                        </Menu>
+                                                <MenuItem onClick={handleCloseAnchorEl}>
+                                                    <ListItemIcon>
+                                                        <HistoryIcon fontSize="small" />
+                                                    </ListItemIcon>
+                                                    last day
+                                                </MenuItem>
+                                                <MenuItem onClick={handleCloseAnchorEl}>
+                                                    <ListItemIcon>
+                                                        <HistoryIcon fontSize="small" />
+                                                    </ListItemIcon>
+                                                    last week
+                                                </MenuItem>
+                                                <MenuItem onClick={handleCloseAnchorEl}>
+                                                    <ListItemIcon>
+                                                        <HistoryIcon fontSize="small" />
+                                                    </ListItemIcon>
+                                                    last month
+                                                </MenuItem>
+                                                <MenuItem onClick={handleCloseAnchorEl}>
+                                                    <ListItemIcon>
+                                                        <HistoryIcon fontSize="small" />
+                                                    </ListItemIcon>
+                                                    last year
+                                                </MenuItem>
+                                            </Menu>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className='col-xl-4 pl-0'>
+                    <div className='col-xl-4 col-12'>
                         <div className='box graphBox'>
                             <div className='graphBoxDetails'>
                                 <div className='dashboardBoxFoot'>
@@ -692,233 +733,328 @@ function Dashboard(props) {
                                 </div>
                                 <p className='mc-sales-card-compare'>$3,578.90 in last month</p>
                             </div>
-                            <div>
+                            <div className='graphBoxChart'>
                                 <Chart
                                     chartType="PieChart"
                                     width="100%"
                                     height="100%"
-                                    data={data}
-                                    options={options}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {/* <div className='col-xl-12'> */}
-                <div className='table-card'>
-                    <div className='table-card-header'>
-                        <h4 className='card-header-tital'>best selling products</h4>
-                        <div className="table-card-CRUD CRUD-dropdown">
-                            <Button onClick={handleOpenCRUD_Action}>
-                                <MoreHorizIcon />
-                            </Button>
-                            <Menu
-                                anchorEl={CRUD_Action}
-                                id="last-time"
-                                className='menu-show'
-                                open={openCRUD_Action}
-                                onClose={handleCloseCRUD_Action}
-                                onClick={handleCloseCRUD_Action}
-                                slotProps={{
-                                    paper: {
-                                        elevation: 0,
-
-                                    },
-                                }}
-                                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                            >
-
-                                <MenuItem onClick={handleCloseCRUD_Action}>
-                                    <ListItemIcon>
-                                        <EditIcon fontSize="small" />
-                                    </ListItemIcon>
-                                    Edit
-                                </MenuItem>
-                                <MenuItem onClick={handleCloseCRUD_Action}>
-                                    <ListItemIcon>
-                                        <DeleteIcon fontSize="small" />
-                                    </ListItemIcon>
-                                    Delete
-                                </MenuItem>
-                                <MenuItem onClick={handleCloseCRUD_Action}>
-                                    <ListItemIcon>
-                                        <DownloadIcon fontSize="small" />
-                                    </ListItemIcon>
-                                    Download
-                                </MenuItem>
-
-                            </Menu>
-                        </div>
-                    </div>
-                    <div className='table-data-select'>
-                        <div className='col'>
-                            <div className='mc-label-field-group label-col'>
-                                <label className='mc-label-field-title'>category by</label>
-                                <select className='mc-label-field-select'>
-                                    <option value={"12row"}>12 row</option>
-                                    <option value={"24row"}>24 row</option>
-                                    <option value={"36row"}>36 row</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div className='col'>
-                            <div className='mc-label-field-group label-col'>
-                                <label className='mc-label-field-title'>brand by</label>
-                                <select className='mc-label-field-select'>
-                                    <option value={"mens"}>mens</option>
-                                    <option value={"womens"}>womens</option>
-                                    <option value={"kids"}>kids</option>
-                                    <option value={"accessory"}>accessory</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div className='col'>
-                            <div className='mc-label-field-group label-col'>
-                                <label className='mc-label-field-title'>show by</label>
-                                <select className='mc-label-field-select'>
-                                    <option value={"ecstasy"}>ecstasy</option>
-                                    <option value={"freeland"}>freeland</option>
-                                    <option value={"rongdhonu"}>rongdhonu</option>
-
-                                </select>
-                            </div>
-                        </div>
-                        <div className='col'>
-                            <div className='mc-label-field-group label-col'>
-                                <label className='mc-label-field-title'>search by</label>
-                                <input
-                                    className='mc-label-field-search-input'
-                                    type='search'
-                                    placeholder='id / name / category / brand'
+                                    data={totalSalesData}
+                                    options={totalSalesoptions}
                                 />
 
                             </div>
                         </div>
                     </div>
+                    <div className='col-xl-12'>
+                        <div className='table-card'>
+                            <div className='table-card-header'>
+                                <h4 className='card-header-tital'>best selling products</h4>
+                                <div className="table-card-CRUD CRUD-dropdown">
+                                    <Button onClick={handleOpenCRUD_Action}>
+                                        <MoreHorizIcon />
+                                    </Button>
+                                    <Menu
+                                        anchorEl={CRUD_Action}
+                                        id="last-time"
+                                        className='menu-show'
+                                        open={openCRUD_Action}
+                                        onClose={handleCloseCRUD_Action}
+                                        onClick={handleCloseCRUD_Action}
+                                        slotProps={{
+                                            paper: {
+                                                elevation: 0,
 
-                    <div className='table-card-details'>
-                        <Box sx={{ height: '100%', width: '100%' }}>
-                            <DataGrid
-                                rows={rows}
-                                columns={columns}
-                                rowHeight={76}
-                                initialState={{
-                                    pagination: {
-                                        paginationModel: {
-                                            pageSize: 10,
-                                        },
-                                    },
-                                }}
-                                pageSizeOptions={[10]}
-                            // checkboxSelection
-                            />
-                        </Box>
+                                            },
+                                        }}
+                                        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                                        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                                    >
 
+                                        <MenuItem onClick={handleCloseCRUD_Action}>
+                                            <ListItemIcon>
+                                                <EditIcon fontSize="small" />
+                                            </ListItemIcon>
+                                            Edit
+                                        </MenuItem>
+                                        <MenuItem onClick={handleCloseCRUD_Action}>
+                                            <ListItemIcon>
+                                                <DeleteIcon fontSize="small" />
+                                            </ListItemIcon>
+                                            Delete
+                                        </MenuItem>
+                                        <MenuItem onClick={handleCloseCRUD_Action}>
+                                            <ListItemIcon>
+                                                <DownloadIcon fontSize="small" />
+                                            </ListItemIcon>
+                                            Download
+                                        </MenuItem>
+
+                                    </Menu>
+                                </div>
+                            </div>
+                            <div className='table-data-select row row-cols-xl-4  row-cols-sm-2 row-cols-1'>
+                                <div className='col'>
+                                    <div className='mc-label-field-group label-col'>
+                                        <label className='mc-label-field-title'>category by</label>
+                                        <select className='mc-label-field-select '>
+                                            <option value={"12row"}>12 row</option>
+                                            <option value={"24row"}>24 row</option>
+                                            <option value={"36row"}>36 row</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className='col'>
+                                    <div className='mc-label-field-group label-col'>
+                                        <label className='mc-label-field-title'>brand by</label>
+                                        <select className='mc-label-field-select'>
+                                            <option value={"mens"}>mens</option>
+                                            <option value={"womens"}>womens</option>
+                                            <option value={"kids"}>kids</option>
+                                            <option value={"accessory"}>accessory</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className='col'>
+                                    <div className='mc-label-field-group label-col'>
+                                        <label className='mc-label-field-title'>show by</label>
+                                        <select className='mc-label-field-select'>
+                                            <option value={"ecstasy"}>ecstasy</option>
+                                            <option value={"freeland"}>freeland</option>
+                                            <option value={"rongdhonu"}>rongdhonu</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className='col'>
+                                    <div className='mc-label-field-group label-col'>
+                                        <label className='mc-label-field-title'>search by</label>
+                                        <input
+                                            className='mc-label-field-search-input'
+                                            type='search'
+                                            placeholder='id / name / category / brand'
+                                        />
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className='table-card-details'>
+                                <Box sx={{ height: '100%', width: '100%' }}>
+                                    <DataGrid
+                                        rows={rows}
+                                        columns={columns}
+                                        rowHeight={76}
+                                        initialState={{
+                                            pagination: {
+                                                paginationModel: {
+                                                    pageSize: 10,
+                                                },
+                                            },
+                                        }}
+                                        pageSizeOptions={[10]}
+                                    // checkboxSelection
+                                    />
+                                </Box>
+
+                            </div>
+                        </div>
                     </div>
-                </div>
-                {/* </div> */}
-                <div className='col-xl-8'>
-                    <div className='table-card'>
-                        <div className='card-revenue-header'>
-                            <h4 className='card-header-tital'>revenue report</h4>
-                            <div className='card-revenue-select'>
-                                <i className='material-icons'><CalendarMonthIcon /></i>
-                                <select>
-                                    <option>Select Option</option>
-                                    <option value={'year2021'}>year 2021</option>
-                                    <option value={'year2020'}>year 2020</option>
-                                    <option value={'year2019'}>year 2019</option>
-                                    <option value={'year2018'}>year 2018</option>
-                                    <option value={'year2017'}>year 2017</option>
-                                    <option value={'year2016'}>year 2016</option>
-                                    <option value={'year2015'}>year 2015</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div className='card-revenue-group'>
-                            <div className='card-revenue-group-report'>
 
-                                <svg width={0} height={0}>
-                                    <linearGradient id="linearColors" x1={1} y1={0} x2={1} y2={1}>
-                                        <stop offset={0} stopColor="#2b77e5" />
-                                        <stop offset={1} stopColor="#64b3f6" />
-                                    </linearGradient>
-                                </svg>
-                                <CasesRoundedIcon sx={{ fill: "url(#linearColors)" }} />
-                                <h3>
-                                    <span>invested</span>
-                                    3,387.67K
-                                </h3>
 
+                    <div className='col-xl-8'>
+                        <div className='table-card'>
+                            <div className='card-revenue-header'>
+                                <h4 className='card-header-tital'>revenue report</h4>
+                                <div className='card-revenue-select'>
+                                    <i className='material-icons'><CalendarMonthIcon /></i>
+                                    <select>
+                                        <option>Select Option</option>
+                                        <option value={'year2021'}>year 2021</option>
+                                        <option value={'year2020'}>year 2020</option>
+                                        <option value={'year2019'}>year 2019</option>
+                                        <option value={'year2018'}>year 2018</option>
+                                        <option value={'year2017'}>year 2017</option>
+                                        <option value={'year2016'}>year 2016</option>
+                                        <option value={'year2015'}>year 2015</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div className='card-revenue-group-report'>
-                                <svg width={0} height={0}>
-                                    <linearGradient id="green" x1={1} y1={0} x2={1} y2={1}>
-                                        <stop offset={0} stopColor="#1a9f53" />
-                                        <stop offset={1} stopColor="#4eda89" />
-                                    </linearGradient>
-                                </svg>
-                                <BookmarksIcon sx={{ fill: "url(#green)" }} />
-                                <h3>
-                                    <span>earnings</span>
-                                    2,856.35K
-                                </h3>
+                            <div className='card-revenue-group'>
+                                <div className='card-revenue-group-report'>
 
+                                    <svg width={0} height={0}>
+                                        <linearGradient id="linearColors" x1={1} y1={0} x2={1} y2={1}>
+                                            <stop offset={0} stopColor="#2b77e5" />
+                                            <stop offset={1} stopColor="#64b3f6" />
+                                        </linearGradient>
+                                    </svg>
+                                    <CasesRoundedIcon sx={{ fill: "url(#linearColors)" }} />
+                                    <h3>
+                                        <span>invested</span>
+                                        3,387.67K
+                                    </h3>
+
+                                </div>
+                                <div className='card-revenue-group-report'>
+                                    <svg width={0} height={0}>
+                                        <linearGradient id="green" x1={1} y1={0} x2={1} y2={1}>
+                                            <stop offset={0} stopColor="#1a9f53" />
+                                            <stop offset={1} stopColor="#4eda89" />
+                                        </linearGradient>
+                                    </svg>
+                                    <BookmarksIcon sx={{ fill: "url(#green)" }} />
+                                    <h3>
+                                        <span>earnings</span>
+                                        2,856.35K
+                                    </h3>
+
+                                </div>
+                                <div className='card-revenue-group-report'>
+                                    <svg width={0} height={0}>
+                                        <linearGradient id="purpel" x1={1} y1={0} x2={1} y2={1}>
+                                            <stop offset={0} stopColor="#be0ee1" />
+                                            <stop offset={1} stopColor="#ed68ff" />
+                                        </linearGradient>
+                                    </svg>
+                                    <LayersIcon sx={{ fill: "url(#purpel)" }} />
+                                    <h3>
+                                        <span>expenses</span>
+                                        1,994.12K
+                                    </h3>
+                                </div>
                             </div>
-                            <div className='card-revenue-group-report'>
-                                <svg width={0} height={0}>
-                                    <linearGradient id="purpel" x1={1} y1={0} x2={1} y2={1}>
-                                        <stop offset={0} stopColor="#be0ee1" />
-                                        <stop offset={1} stopColor="#ed68ff" />
-                                    </linearGradient>
-                                </svg>
-                                <LayersIcon sx={{ fill: "url(#purpel)" }} />
-                                <h3>
-                                    <span>expenses</span>
-                                    1,994.12K
-                                </h3>
+                            <div className='w-100 h-100'>
+                                <ResponsiveContainer width="100%" height={400}>
+                                    <AreaChart
+                                        data={revenueData}
+                                    >
+                                        <defs>
+                                            <linearGradient id="colorInvest" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#3498db" stopOpacity={0.3} />
+                                                <stop offset="95%" stopColor="#3498db" stopOpacity={0} />
+                                            </linearGradient>
+                                            <linearGradient id="colorEarning" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#2ecc71" stopOpacity={0.3} />
+                                                <stop offset="95%" stopColor="#2ecc71" stopOpacity={0} />
+                                            </linearGradient>
+                                            <linearGradient id="colorExpense" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#ED68FF" stopOpacity={0.3} />
+                                                <stop offset="95%" stopColor="#ED68FF" stopOpacity={0} />
+                                            </linearGradient>
+                                        </defs>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="month" />
+                                        <YAxis />
+                                        <Tooltip content={<CustomTooltip />} />
+                                        <Area type="stepAfter" dataKey="invest" stroke="#3498db" fillOpacity={1} fill="url(#colorInvest)" />
+                                        <Area type="stepAfter" dataKey="earning" stroke="#2ecc71" fillOpacity={1} fill="url(#colorEarning)" />
+                                        <Area type="stepAfter" dataKey="expense" stroke="#ED68FF" fillOpacity={1} fill="url(#colorExpense)" />
+                                    </AreaChart>
+                                </ResponsiveContainer>
                             </div>
-                        </div>
-                        <div className='w-100 h-100'>
-                            <ResponsiveContainer width="100%" height={400}>
-                                <AreaChart
-                                    data={dataArea}
-                                >
-                                    <defs>
-                                        <linearGradient id="colorInvest" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#3498db" stopOpacity={0.3} />
-                                            <stop offset="95%" stopColor="#3498db" stopOpacity={0} />
-                                        </linearGradient>
-                                        <linearGradient id="colorEarning" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#2ecc71" stopOpacity={0.3} />
-                                            <stop offset="95%" stopColor="#2ecc71" stopOpacity={0} />
-                                        </linearGradient>
-                                        <linearGradient id="colorExpense" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#ED68FF" stopOpacity={0.3} />
-                                            <stop offset="95%" stopColor="#ED68FF" stopOpacity={0} />
-                                        </linearGradient>
-                                    </defs>
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="month" />
-                                    <YAxis />
-                                    <Tooltip content={<CustomTooltip />} />
-                                    <Area type="stepAfter" dataKey="invest" stroke="#3498db" fillOpacity={1} fill="url(#colorInvest)" />
-                                    <Area type="stepAfter" dataKey="earning" stroke="#2ecc71" fillOpacity={1} fill="url(#colorEarning)" />
-                                    <Area type="stepAfter" dataKey="expense"  stroke="#ED68FF" fillOpacity={1} fill="url(#colorExpense)" />
-                                </AreaChart>
-                            </ResponsiveContainer>
                         </div>
                     </div>
-                </div>
-                <div className='col-xl-4'>
-                    <div className='table-card'>
+                    <div className='col-xl-4'>
+                        <div className='table-card'>
+                            <div className='card-revenue-header'>
+                                <h4 className='card-header-tital'>orders overview </h4>
+                                <div className='boxFootIcon'>
+                                    <Button onClick={handleOpenAnchorEl}>
+                                        <MoreHorizIcon />
+                                    </Button>
+                                    <Menu
+                                        anchorEl={AnchorEl}
+                                        id="last-time"
+                                        open={openAnchorEl}
+                                        onClose={handleCloseAnchorEl}
+                                        onClick={handleCloseAnchorEl}
+                                        slotProps={{
+                                            paper: {
+                                                elevation: 0,
+
+                                            },
+                                        }}
+                                        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                                        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                                    >
+
+                                        <MenuItem onClick={handleCloseAnchorEl}>
+                                            <ListItemIcon>
+                                                <HistoryIcon fontSize="small" />
+                                            </ListItemIcon>
+                                            last day
+                                        </MenuItem>
+                                        <MenuItem onClick={handleCloseAnchorEl}>
+                                            <ListItemIcon>
+                                                <HistoryIcon fontSize="small" />
+                                            </ListItemIcon>
+                                            last week
+                                        </MenuItem>
+                                        <MenuItem onClick={handleCloseAnchorEl}>
+                                            <ListItemIcon>
+                                                <HistoryIcon fontSize="small" />
+                                            </ListItemIcon>
+                                            last month
+                                        </MenuItem>
+                                        <MenuItem onClick={handleCloseAnchorEl}>
+                                            <ListItemIcon>
+                                                <HistoryIcon fontSize="small" />
+                                            </ListItemIcon>
+                                            last year
+                                        </MenuItem>
+                                    </Menu>
+                                </div>
+                            </div>
+                            <div className='w-100'>
+                                {/* <Chart
+                                    chartType="PieChart"
+                                    width="100%"
+                                    height="100%"
+                                    data={overviewdata}
+                                    options={overviewoptions}
+                                /> */}
+                                <Chart
+                                    chartType="PieChart"
+                                    data={overviewdata}
+                                    options={overviewoptions}
+                                    width={"100%"}
+                                    height={"250px"}
+                                />
+                                <div style={{ textAlign: "left", marginTop: "20px" }}>
+                                    {legend.map((item) => (
+                                        <div
+                                            key={item.label}
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                borderTop: "1px solid #f0f0f0",
+                                                padding:"10px 0"
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    width: "12px",
+                                                    height: "12px",
+                                                    backgroundColor: item.color,
+                                                    borderRadius: "50%",
+                                                    marginRight: "10px",
+                                                }}
+                                            />
+                                            <div style={{ flex: 1 }}>{item.label}</div>
+                                            <div style={{ fontWeight: "bold" }}>{item.count}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
             </div>
+
         </div>
+
     );
 }
 

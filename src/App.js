@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
+import './Responsive.css';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Dashboard from './pages/Dashboard/Dashboard';
 import Header from './components/Header/Header';
