@@ -320,7 +320,7 @@ function Header(props) {
                                             <div className='drpodownInfo'>
                                                 <h4>
                                                     <span>
-                                                        <b>Mahmudul </b>
+                                                        <b>Vaibhav Gohil </b>
                                                         added to his favorite list
                                                         <b> Leather belt steve madden</b>
                                                     </span>
@@ -343,7 +343,7 @@ function Header(props) {
                                             <div className='drpodownInfo'>
                                                 <h4>
                                                     <span>
-                                                        <b>Mahmudul </b>
+                                                        <b>Vaibhav Gohil </b>
                                                         added to his favorite list
                                                         <b> Leather belt steve madden</b>
                                                     </span>
@@ -365,7 +365,7 @@ function Header(props) {
                                             <div className='drpodownInfo'>
                                                 <h4>
                                                     <span>
-                                                        <b>Mahmudul </b>
+                                                        <b>Vaibhav Gohil </b>
                                                         added to his favorite list
                                                         <b> Leather belt steve madden</b>
                                                     </span>
@@ -387,7 +387,7 @@ function Header(props) {
                                             <div className='drpodownInfo'>
                                                 <h4>
                                                     <span>
-                                                        <b>Mahmudul </b>
+                                                        <b>Vaibhav Gohil </b>
                                                         added to his favorite list
                                                         <b> Leather belt steve madden</b>
                                                     </span>
@@ -409,7 +409,7 @@ function Header(props) {
                                             <div className='drpodownInfo'>
                                                 <h4>
                                                     <span>
-                                                        <b>Mahmudul </b>
+                                                        <b>Vaibhav Gohil </b>
                                                         added to his favorite list
                                                         <b> Leather belt steve madden</b>
                                                     </span>
@@ -431,7 +431,7 @@ function Header(props) {
                                             <div className='drpodownInfo'>
                                                 <h4>
                                                     <span>
-                                                        <b>Mahmudul </b>
+                                                        <b>Vaibhav Gohil </b>
                                                         added to his favorite list
                                                         <b> Leather belt steve madden</b>
                                                     </span>
